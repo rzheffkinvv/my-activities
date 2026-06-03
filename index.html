@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор Активностей - MVP</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4 font-sans text-slate-800">
+
+    <div class="w-full max-w-md mb-4 flex flex-col items-center">
+        <label for="categoryFilter" class="block text-sm font-medium text-slate-600 mb-1.5">Что тебе по душе?</label>
+        <select id="categoryFilter" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base" disabled>
+            <option value="all">Загрузка категорий...</option>
+        </select>
+    </div>
+
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 relative min-h-[480px] flex flex-col justify-between">
+        
+        <div id="loading" class="absolute inset-0 bg-white/95 z-10 flex flex-col items-center justify-center transition-opacity duration-300">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-indigo-500 border-t-transparent mb-2"></div>
+            <p class="text-sm text-slate-500 font-medium">Ищем крутую идею...</p>
+        </div>
+
+        <div id="error" class="hidden absolute inset-0 bg-white z-10 p-6 flex flex-col items-center justify-center text-center">
+            <span class="text-4xl mb-2">⚠️</span>
+            <p class="text-red-500 font-semibold mb-2">Не удалось загрузить данные</p>
+            <p class="text-xs text-slate-500">Проверь, опубликована ли таблица в интернете и правильно ли вставлена ссылка в файл script.js</p>
+        </div>
+
+        <div id="cardContent" class="opacity-0 transition-opacity duration-300 flex flex-col h-full">
+            
+            <div class="relative h-48 w-full bg-slate-200 overflow-hidden">
+                <img id="actImage" src="" alt="Активность" class="w-full h-full object-cover">
+                
+                <span id="actCategory" class="absolute top-3 left-3 bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
+                    Категория
+                </span>
+            </div>
+
+            <div class="p-6 flex-grow flex flex-col justify-between">
+                <div>
+                    <h2 id="actTitle" class="text-2xl font-bold text-slate-900 leading-tight mb-2">Заголовок активности</h2>
+                    <p id="actDescription" class="text-slate-600 text-sm leading-relaxed mb-4">Описание активности появится здесь.</p>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 mb-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Где или как:</h3>
+                    <p id="actRecommendations" class="text-slate-700 text-sm whitespace-pre-line">Рекомендации и места.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 pt-0 mt-auto">
+            <button id="nextBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-indigo-200 transition-all duration-150 flex items-center justify-center gap-2 text-base cursor-pointer">
+                <span>Показать ещё активность</span>
+                <span>✨</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
