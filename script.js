@@ -17,25 +17,47 @@ const elDescription = document.getElementById('actDescription');
 const elRecommendations = document.getElementById('actRecommendations');
 const elNextBtn = document.getElementById('nextBtn');
 
-// Функция автоматического превращения CSV-текста в удобный формат
+// НАДЕЖНАЯ ФУНКЦИЯ ДЛЯ РАЗБОРА CSV (ПРАВИЛЬНО ЧИТАЕТ ДЛИННЫЕ ТЕКСТЫ И СИМВОЛЫ)
 function parseCSV(text) {
-    const lines = text.split('\n');
+    const lines = [];
+    let row = [""];
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"') {
+            if (inQuotes && nextChar === '"') {
+                row[row.length - 1] += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (char === ',' && !inQuotes) {
+            row.push('');
+        } else if ((char === '\r' || char === '\n') && !inQuotes) {
+            if (char === '\r' && nextChar === '\n') { i++; }
+            lines.push(row);
+            row = [''];
+        } else {
+            row[row.length - 1] += char;
+        }
+    }
+    if (row.length > 1 || row[0] !== '') { lines.push(row); }
     if (lines.length < 2) return [];
-    
-    // Читаем заголовки колонок из первой строки таблицы
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-    
+
+    const headers = lines[0].map(h => h.trim().toLowerCase());
     const result = [];
+
     for (let i = 1; i < lines.length; i++) {
-        if (!lines[i].trim()) continue;
-        
-        // Магия регулярных выражений, чтобы текст с запятыми внутри ячеек не ломал таблицу
-        const matches = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
-        const row = matches.map(val => val.replace(/^"|"$/g, '').trim());
+        const currentRow = lines[i];
+        if (currentRow.length === 1 && currentRow[0] === '') continue;
         
         const obj = {};
         headers.forEach((header, index) => {
-            obj[header] = row[index] || '';
+            let val = currentRow[index] || '';
+            obj[header] = val.trim();
         });
         result.push(obj);
     }
@@ -46,7 +68,8 @@ function parseCSV(text) {
 async function loadData() {
     try {
         showLoading(true);
-        const response = await fetch(SHEET_CSV_URL);
+        // Добавляем случайный параметр, чтобы браузер не кэшировал старую таблицу
+        const response = await fetch(`${SHEET_CSV_URL}&nocache=${Date.now()}`);
         if (!response.ok) throw new Error('Ошибка сети');
         
         const dataText = await response.text();
@@ -54,8 +77,8 @@ async function loadData() {
         
         if (allActivities.length === 0) throw new Error('Таблица пустая');
 
-        initFilter(); // Создаем фильтр на основе категорий из таблицы
-        showRandomActivity(); // Показываем первую случайную карточку
+        initFilter(); 
+        showRandomActivity(); 
     } catch (err) {
         console.error(err);
         elError.classList.remove('hidden');
@@ -86,7 +109,6 @@ function initFilter() {
 function showRandomActivity() {
     showLoading(true);
     
-    // Фильтруем карточки: либо все, либо только выбранная категория
     const filtered = currentCategory === 'all' 
         ? allActivities 
         : allActivities.filter(item => item.category && item.category.trim() === currentCategory);
@@ -97,19 +119,15 @@ function showRandomActivity() {
         return;
     }
 
-    // Выбираем случайную строку
     const randomItem = filtered[Math.floor(Math.random() * filtered.length)];
 
-    // Заполняем карточку данными
     elTitle.textContent = randomItem.title || 'Без названия';
     elDescription.textContent = randomItem.description || 'Описание отсутствует.';
     elRecommendations.textContent = randomItem.recommendations || 'Особых рекомендаций нет, просто попробуй!';
     elCategory.textContent = randomItem.category || 'Активность';
     
-    // Если ссылки на картинку нет в таблице, ставим стандартную красивую заглушку
     elImage.src = randomItem.image || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=500';
 
-    // Включаем отображение, как только картинка прогрузится базово браузером
     elImage.onload = () => showLoading(false);
     elImage.onerror = () => {
         elImage.src = 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=500';
