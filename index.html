@@ -7,7 +7,7 @@
     <!-- Подключаем Tailwind для базовых отступов и шрифтов -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     
-    <!-- Жесткие стили темной темы, которые сработают со 100% гарантией -->
+    <!-- Жесткие стили темной темы -->
     <style>
         body {
             background-color: #020617 !important; /* Глубокий черный/угольный */
@@ -21,7 +21,7 @@
         .dark-card {
             background-color: #0f172a !important; /* Темный фон карточки */
             border: 1px solid #334155 !important; /* Тонкая серая рамка */
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
         }
 
         .dark-select {
@@ -53,10 +53,10 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-6 font-sans text-slate-100 antialiased">
 
-    <!-- Селектор категорий (Темная тема) -->
-    <div class="w-full max-w-sm mb-5">
+    <!-- Селектор категорий (Сделан чуть шире под новую карточку) -->
+    <div class="w-full max-w-xl mb-5">
         <div class="relative">
-            <select id="categoryFilter" class="dark-select w-full rounded-xl pl-4 pr-10 py-3 text-sm font-medium appearance-none cursor-pointer" disabled>
+            <select id="categoryFilter" class="dark-select w-full rounded-xl pl-4 pr-10 py-3.5 text-sm font-medium appearance-none cursor-pointer" disabled>
                 <option value="all">🌟 Загрузка категорий...</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
@@ -65,8 +65,8 @@
         </div>
     </div>
 
-    <!-- Контейнер карточки -->
-    <div class="dark-card w-full max-w-sm rounded-2xl overflow-hidden relative min-h-[520px] flex flex-col justify-between transition-all duration-300">
+    <!-- Контейнер карточки (max-w-xl делает её шире и внушительнее) -->
+    <div class="dark-card w-full max-w-xl rounded-2xl overflow-hidden relative min-h-[580px] flex flex-col justify-between transition-all duration-300">
         
         <!-- Состояние загрузки (Темный оверлей) -->
         <div id="loading" class="absolute inset-0 bg-slate-900/95 z-10 flex flex-col items-center justify-center transition-opacity duration-200">
@@ -83,44 +83,44 @@
         <!-- Контент карточки -->
         <div id="cardContent" class="opacity-0 transition-opacity duration-300 flex flex-col h-full">
             
-            <!-- Изображение -->
-            <div class="relative h-52 w-full bg-slate-950 border-b border-slate-800 overflow-hidden">
-                <img id="actImage" src="" alt="Активность" class="w-full h-full object-cover opacity-85">
+            <!-- Изображение (h-80 делает картинку большой и сочной) -->
+            <div class="relative h-80 w-full bg-slate-950 border-b border-slate-800 overflow-hidden">
+                <img id="actImage" src="" alt="Активность" class="w-full h-full object-cover opacity-90">
                 <!-- Плавный темный градиент поверх картинки -->
                 <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-80"></div>
                 
                 <!-- Категория -->
-                <span id="actCategory" class="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
+                <span id="actCategory" class="absolute top-4 left-4 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-md shadow-sm">
                     Категория
                 </span>
             </div>
 
-            <!-- Контентная часть -->
-            <div class="p-5 flex-grow flex flex-col justify-between">
-                <div class="mb-4">
-                    <!-- Заголовок (Ярко-белый) -->
-                    <h2 id="actTitle" class="text-xl font-bold text-white tracking-tight leading-snug mb-2">
+            <!-- Контентная часть (Добавили больше внутренних отступов) -->
+            <div class="p-6 flex-grow flex flex-col justify-between">
+                <div class="mb-5">
+                    <!-- Заголовок (Крупнее и заметнее) -->
+                    <h2 id="actTitle" class="text-2xl font-bold text-white tracking-tight leading-snug mb-2.5">
                         Заголовок активности
                     </h2>
-                    <!-- Описание (Мягкий серый) -->
-                    <p id="actDescription" class="text-slate-400 text-xs leading-relaxed">
+                    <!-- Описание -->
+                    <p id="actDescription" class="text-slate-400 text-sm leading-relaxed">
                         Описание активности появится здесь.
                     </p>
                 </div>
 
-                <!-- Рекомендации (Блок в стиле Bento Box / Code Panel) -->
-                <div class="dark-bento rounded-xl p-3.5 mt-auto">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 block mb-1">Где или как</span>
-                    <p id="actRecommendations" class="text-slate-300 text-xs font-medium whitespace-pre-line leading-normal">
+                <!-- Рекомендации (Красивый широкий блок) -->
+                <div class="dark-bento rounded-xl p-4 mt-auto">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 block mb-1.5">Где или как</span>
+                    <p id="actRecommendations" class="text-slate-300 text-sm font-medium whitespace-pre-line leading-relaxed">
                         Рекомендации и места.
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- Кнопка (Ярко-белая) -->
-        <div class="p-5 pt-0 mt-auto">
-            <button id="nextBtn" class="white-btn w-full py-3.5 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 text-xs cursor-pointer tracking-wide">
+        <!-- Кнопка -->
+        <div class="p-6 pt-0 mt-auto">
+            <button id="nextBtn" class="white-btn w-full py-4 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 text-sm cursor-pointer tracking-wide">
                 <span>Следующая идея</span>
                 <span>→</span>
             </button>
