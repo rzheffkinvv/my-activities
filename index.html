@@ -4,16 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Генератор Активностей - MVP</title>
-    <!-- Подключаем Tailwind CSS -->
+    <!-- Подключаем Tailwind для базовых отступов и шрифтов -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <!-- Жесткие стили темной темы, которые сработают со 100% гарантией -->
+    <style>
+        body {
+            background-color: #020617 !important; /* Глубокий черный/угольный */
+            /* Настоящая сетка в стиле 21st.dev */
+            background-image: 
+                linear-gradient(to right, #1e293b 1px, transparent 1px),
+                linear-gradient(to bottom, #1e293b 1px, transparent 1px) !important;
+            background-size: 4rem 4rem !important;
+        }
+        
+        .dark-card {
+            background-color: #0f172a !important; /* Темный фон карточки */
+            border: 1px solid #334155 !important; /* Тонкая серая рамка */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .dark-select {
+            background-color: #0f172a !important;
+            color: #f1f5f9 !important;
+            border: 1px solid #334155 !important;
+        }
+
+        .dark-bento {
+            background-color: #020617 !important; /* Блок рекомендаций еще темнее */
+            border: 1px solid #1e293b !important;
+        }
+
+        /* Белая контрастная кнопка */
+        .white-btn {
+            background-color: #ffffff !important;
+            color: #020617 !important;
+            font-weight: 600 !important;
+            transition: all 0.2s ease !important;
+        }
+        .white-btn:hover {
+            background-color: #e2e8f0 !important;
+            transform: translateY(-1px);
+        }
+        .white-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
 </head>
-<!-- Глубокий темный фон с неоновой сеткой в стиле 21st.dev -->
-<body class="bg-slate-950 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] min-h-screen flex flex-col items-center justify-center p-6 font-sans text-slate-100 antialiased">
+<body class="min-h-screen flex flex-col items-center justify-center p-6 font-sans text-slate-100 antialiased">
 
     <!-- Селектор категорий (Темная тема) -->
     <div class="w-full max-w-sm mb-5">
         <div class="relative">
-            <select id="categoryFilter" class="w-full bg-slate-900 text-slate-200 border border-slate-800 rounded-xl pl-4 pr-10 py-3 shadow-[0_2px_8px_rgba(0,0,0,0.2)] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all text-sm font-medium appearance-none cursor-pointer" disabled>
+            <select id="categoryFilter" class="dark-select w-full rounded-xl pl-4 pr-10 py-3 text-sm font-medium appearance-none cursor-pointer" disabled>
                 <option value="all">🌟 Загрузка категорий...</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
@@ -22,18 +65,18 @@
         </div>
     </div>
 
-    <!-- Контейнер карточки (Dark Mode Component) -->
-    <div class="w-full max-w-sm bg-slate-900 rounded-2xl border border-slate-800 shadow-[0_8px_30px_rgba(0,0,0,0.3)] overflow-hidden relative min-h-[500px] flex flex-col justify-between transition-all duration-300 hover:border-slate-700">
+    <!-- Контейнер карточки -->
+    <div class="dark-card w-full max-w-sm rounded-2xl overflow-hidden relative min-h-[520px] flex flex-col justify-between transition-all duration-300">
         
         <!-- Состояние загрузки (Темный оверлей) -->
-        <div id="loading" class="absolute inset-0 bg-slate-900/90 z-10 flex flex-col items-center justify-center transition-opacity duration-200">
+        <div id="loading" class="absolute inset-0 bg-slate-900/95 z-10 flex flex-col items-center justify-center transition-opacity duration-200">
             <div class="h-6 w-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
 
         <!-- Состояние ошибки -->
         <div id="error" class="hidden absolute inset-0 bg-slate-900 z-10 p-6 flex flex-col items-center justify-center text-center">
             <span class="text-2xl mb-2">⚠️</span>
-            <p class="text-slate-100 font-semibold text-sm mb-1">Ошибка загрузки данных</p>
+            <p class="text-white font-semibold text-sm mb-1">Ошибка загрузки данных</p>
             <p class="text-xs text-slate-500">Проверь ссылку в script.js</p>
         </div>
 
@@ -43,10 +86,10 @@
             <!-- Изображение -->
             <div class="relative h-52 w-full bg-slate-950 border-b border-slate-800 overflow-hidden">
                 <img id="actImage" src="" alt="Активность" class="w-full h-full object-cover opacity-85">
-                <!-- Затемнение картинки снизу для стиля -->
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
+                <!-- Плавный темный градиент поверх картинки -->
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-80"></div>
                 
-                <!-- Категория (Яркий контрастный бэдж) -->
+                <!-- Категория -->
                 <span id="actCategory" class="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
                     Категория
                 </span>
@@ -55,18 +98,18 @@
             <!-- Контентная часть -->
             <div class="p-5 flex-grow flex flex-col justify-between">
                 <div class="mb-4">
-                    <!-- Заголовок (Белоснежный, жирный) -->
+                    <!-- Заголовок (Ярко-белый) -->
                     <h2 id="actTitle" class="text-xl font-bold text-white tracking-tight leading-snug mb-2">
                         Заголовок активности
                     </h2>
-                    <!-- Описание (Приглушенный серый) -->
+                    <!-- Описание (Мягкий серый) -->
                     <p id="actDescription" class="text-slate-400 text-xs leading-relaxed">
                         Описание активности появится здесь.
                     </p>
                 </div>
 
-                <!-- Рекомендации (Блок в стиле кода/терминала) -->
-                <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 mt-auto">
+                <!-- Рекомендации (Блок в стиле Bento Box / Code Panel) -->
+                <div class="dark-bento rounded-xl p-3.5 mt-auto">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 block mb-1">Где или как</span>
                     <p id="actRecommendations" class="text-slate-300 text-xs font-medium whitespace-pre-line leading-normal">
                         Рекомендации и места.
@@ -75,11 +118,11 @@
             </div>
         </div>
 
-        <!-- Кнопка (Инвертированная, ярко-белая с черным текстом) -->
+        <!-- Кнопка (Ярко-белая) -->
         <div class="p-5 pt-0 mt-auto">
-            <button id="nextBtn" class="w-full bg-white hover:bg-slate-200 active:scale-[0.98] text-slate-950 font-semibold py-3 px-4 rounded-xl shadow-sm transition-all duration-150 flex items-center justify-center gap-2 text-xs cursor-pointer tracking-wide">
+            <button id="nextBtn" class="white-btn w-full py-3.5 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 text-xs cursor-pointer tracking-wide">
                 <span>Следующая идея</span>
-                <span class="font-light">→</span>
+                <span>→</span>
             </button>
         </div>
     </div>
